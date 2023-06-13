@@ -1,0 +1,14 @@
+{
+  "name": "menu-bar-tools",
+  "author": "tex",
+  "description": "easily execute some common shell scripts",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^25.1.0"
+  }
+}
