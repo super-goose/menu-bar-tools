@@ -1,17 +1,12 @@
 const { Tray, Menu } = require("electron");
 const path = require("path");
-
-const menu = [
-  {
-    role: "quit",
-    accelerator: "Command+Q",
-  },
-];
+const helper = require("./helperCommands");
 
 class TrayGenerator {
-  constructor(mainWindow) {
+  constructor(mainWindow, store) {
     this.tray = null;
     this.mainWindow = mainWindow;
+    this.store = store;
   }
   getWindowPosition = () => {
     const windowBounds = this.mainWindow.getBounds();
@@ -21,6 +16,41 @@ class TrayGenerator {
     );
     const y = Math.round(trayBounds.y + trayBounds.height);
     return { x, y };
+  };
+
+  getMenu = () => {
+    const menu = [
+      {
+        label: "Log in G1Client Mobile",
+        click: (event) => {
+          helper.loginClient();
+        },
+      },
+      {
+        label: "Log in Kingpin",
+        click: (event) => {
+          helper.loginKingpin();
+        },
+      },
+      {
+        label: "Log in Ironfist",
+        click: (event) => {
+          helper.loginIronfist();
+        },
+      },
+      {
+        label: "Toggle",
+        type: "checkbox",
+        checked: this.store.get("toggleStored"),
+        click: (event) => this.store.set("toggleStored", event.checked),
+      },
+      {
+        label: 'Quit "Tools"',
+        role: "quit",
+        accelerator: "Command+Q",
+      },
+    ];
+    return menu;
   };
 
   showWindow = () => {
@@ -33,11 +63,15 @@ class TrayGenerator {
   };
 
   showMenu = () => {
-    if (this.mainWindow.isVisible()) {
+    if (
+      this.mainWindow &&
+      this.mainWindow.isVisible &&
+      this.mainWindow.isVisible()
+    ) {
       this.mainWindow.hide();
       // this.showWindow();
     }
-    this.tray.popUpContextMenu(Menu.buildFromTemplate(menu));
+    this.tray.popUpContextMenu(Menu.buildFromTemplate(this.getMenu()));
   };
 
   createTray = () => {
