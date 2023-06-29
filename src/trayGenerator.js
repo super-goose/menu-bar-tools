@@ -1,6 +1,7 @@
 const { Tray, Menu } = require("electron");
 const path = require("path");
 const helper = require("./helperCommands");
+const { commands } = require("./commands.json");
 
 class TrayGenerator {
   constructor(mainWindow, store) {
@@ -20,30 +21,18 @@ class TrayGenerator {
 
   getMenu = () => {
     const menu = [
-      {
-        label: "Log in G1Client Mobile",
-        click: (event) => {
-          helper.loginClient();
+      ...commands.map(({ label, command }) => ({
+        label,
+        click: () => {
+          helper.execute(command);
         },
-      },
-      {
-        label: "Log in Kingpin",
-        click: (event) => {
-          helper.loginKingpin();
-        },
-      },
-      {
-        label: "Log in Ironfist",
-        click: (event) => {
-          helper.loginIronfist();
-        },
-      },
-      {
-        label: "Toggle",
-        type: "checkbox",
-        checked: this.store.get("toggleStored"),
-        click: (event) => this.store.set("toggleStored", event.checked),
-      },
+      })),
+      // {
+      //   label: "Toggle",
+      //   type: "checkbox",
+      //   checked: this.store.get("toggleStored"),
+      //   click: (event) => this.store.set("toggleStored", event.checked),
+      // },
       {
         label: 'Quit "Tools"',
         role: "quit",
